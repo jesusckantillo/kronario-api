@@ -1,0 +1,142 @@
+[
+    {
+        "CODIGO": "0047",
+        "NOMBRE_DEL_DPTO": "Dpto. Arquitectura y Urbanismo"
+    },
+    {
+        "CODIGO": "0032",
+        "NOMBRE_DEL_DPTO": "Dpto. Ciencias Basicas Medicas"
+    },
+    {
+        "CODIGO": "0040",
+        "NOMBRE_DEL_DPTO": "Dpto. Comunicacion Social"
+    },
+    {
+        "CODIGO": "0050",
+        "NOMBRE_DEL_DPTO": "Dpto. Cs Politica y Rel Intern"
+    },
+    {
+        "CODIGO": "0051",
+        "NOMBRE_DEL_DPTO": "Dpto. Derecho"
+    },
+    {
+        "CODIGO": "0049",
+        "NOMBRE_DEL_DPTO": "Dpto. Dise?o"
+    },
+    {
+        "CODIGO": "0045",
+        "NOMBRE_DEL_DPTO": "Dpto. Educacion"
+    },
+    {
+        "CODIGO": "0016",
+        "NOMBRE_DEL_DPTO": "Dpto. Emprendim y Management"
+    },
+    {
+        "CODIGO": "0034",
+        "NOMBRE_DEL_DPTO": "Dpto. Enfermeria"
+    },
+    {
+        "CODIGO": "0076",
+        "NOMBRE_DEL_DPTO": "Dpto. Espa?ol"
+    },
+    {
+        "CODIGO": "0017",
+        "NOMBRE_DEL_DPTO": "Dpto. Finanzas y Contaduria"
+    },
+    {
+        "CODIGO": "0060",
+        "NOMBRE_DEL_DPTO": "Dpto. Fisica"
+    },
+    {
+        "CODIGO": "0048",
+        "NOMBRE_DEL_DPTO": "Dpto. Historia y Cs. Sociales"
+    },
+    {
+        "CODIGO": "0046",
+        "NOMBRE_DEL_DPTO": "Dpto. Humanidades y Filosofia"
+    },
+    {
+        "CODIGO": "0027",
+        "NOMBRE_DEL_DPTO": "Dpto. Ing. Civil y Ambiental"
+    },
+    {
+        "CODIGO": "0021",
+        "NOMBRE_DEL_DPTO": "Dpto. Ingenieria Basica"
+    },
+    {
+        "CODIGO": "0026",
+        "NOMBRE_DEL_DPTO": "Dpto. Ingenieria Industrial"
+    },
+    {
+        "CODIGO": "0024",
+        "NOMBRE_DEL_DPTO": "Dpto. Ingenieria Mecanica"
+    },
+    {
+        "CODIGO": "0029",
+        "NOMBRE_DEL_DPTO": "Dpto. Ingenieria de Sistemas"
+    },
+    {
+        "CODIGO": "0044",
+        "NOMBRE_DEL_DPTO": "Dpto. Lenguas"
+    },
+    {
+        "CODIGO": "0077",
+        "NOMBRE_DEL_DPTO": "Dpto. Lenguas Extranjeras"
+    },
+    {
+        "CODIGO": "0061",
+        "NOMBRE_DEL_DPTO": "Dpto. Matematicas y estadistic"
+    },
+    {
+        "CODIGO": "0033",
+        "NOMBRE_DEL_DPTO": "Dpto. Medicina"
+    },
+    {
+        "CODIGO": "0015",
+        "NOMBRE_DEL_DPTO": "Dpto. Mercadeo y Neg. Internac"
+    },
+    {
+        "CODIGO": "0090",
+        "NOMBRE_DEL_DPTO": "Dpto. Minors Ingenierias"
+    },
+    {
+        "CODIGO": "0052",
+        "NOMBRE_DEL_DPTO": "Dpto. Musica"
+    },
+    {
+        "CODIGO": "0036",
+        "NOMBRE_DEL_DPTO": "Dpto. Odontologia"
+    },
+    {
+        "CODIGO": "0042",
+        "NOMBRE_DEL_DPTO": "Dpto. Psicologia"
+    },
+    {
+        "CODIGO": "0062",
+        "NOMBRE_DEL_DPTO": "Dpto. Quimica y Biologia"
+    },
+    {
+        "CODIGO": "0041",
+        "NOMBRE_DEL_DPTO": "Dpto. Relaciones Internac."
+    },
+    {
+        "CODIGO": "0035",
+        "NOMBRE_DEL_DPTO": "Dpto. Salud Publica"
+    },
+    {
+        "CODIGO": "0010",
+        "NOMBRE_DEL_DPTO": "Dpto. Tecnologia"
+    },
+    {
+        "CODIGO": "0013",
+        "NOMBRE_DEL_DPTO": "Dpto. de Economia"
+    },
+    {
+        "CODIGO": "0014",
+        "NOMBRE_DEL_DPTO": "Dpto.Finanzas y Organizaciones"
+    },
+    {
+        "CODIGO": "0020",
+        "NOMBRE_DEL_DPTO": "Dpto.Ing Electrica-Electronica"
+    }
+]
