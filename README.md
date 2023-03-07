@@ -1,2 +1,2 @@
 # Kronario Proyect
-El proyecto Kronario es una herramienta de web scraping que se utiliza para obtener información de los horarios de la universidad y organizarla de manera más eficiente. Con Kronario, podrás filtrar la información de las clases, generar nuevos horarios y organizar los horarios existentes
+The Kronario project is a tool used to obtain university timetable information and organize it more efficiently. With Kronario, you will be able to create timetables from filters and specific options.
