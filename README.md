@@ -7,4 +7,5 @@ The Kronario project is a tool used to obtain university timetable information a
 * API REST
 * Databases
 * Permutations and combinations of a set 
-* 
+* HTTP Requests in Python
+* Maybe docker
