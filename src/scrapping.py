@@ -1,8 +1,10 @@
-#Tomar datos de la pagina de la universidad
-#Llenar el formulario para acceder a la pagina con las tabals
+#Take data from the university web site
+#Fill in the form to access the page with the tables.
 from bs4 import BeautifulSoup
 import requests
 import time
+import re
+from schec import NRC
 
 params1 = {
     'elegido': '0029',
@@ -11,7 +13,7 @@ params1 = {
 }
 params2 ={
     'valida': 'OK',
-    'nrc': '2345',
+    'nrc': '2894',
     'BtnNRC': 'Buscar',
     'datos_periodo': '202310',
     'nom_periodo': 'Primer Semestre 2023',
@@ -68,11 +70,12 @@ for colum in table_colums:
 
 
 #TEACHER
-teachers =[]
 five_p = all_p[5]
-teachers_title = five_p.find('strong')
-first_teacher = teachers_title.next_sibling.strip()
-teachers.append(first_teacher)
-print(first_teacher)
-br_inp = five_p.find_all('br')
+text = five_p.get_text();
+text = text.replace("Profesor(es):", "").strip()
+text = re.sub(r"([a-z])([A-Z])", r"\1-\2", text)
+teachers = text.split("-")
 
+
+pepe = NRC(name,int(nrc),blocks,int(quotas),teachers)
+pepe.show_nrc()
