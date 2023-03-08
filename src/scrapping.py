@@ -3,6 +3,7 @@
 from bs4 import BeautifulSoup
 import requests
 import time
+import json
 import re
 from schec import NRC
 
@@ -22,6 +23,29 @@ params2 ={
 
 }
 
+
+#Open json with dpments info
+dpments_file = "data/departamentos.json"
+
+
+def read_dpments(dpments_file):
+    with open(dpments_file) as content:
+        result = json.load(content)
+    print(result)
+
+read_dpments(dpments_file)
+
+def getnrc(nrc):
+
+
+
+
+
+
+
+
+
+""""""
 #URL all  NRC for department
 url_departaments = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/programas.php"
 #URL for  obtain information from an nrc
@@ -75,7 +99,3 @@ text = five_p.get_text();
 text = text.replace("Profesor(es):", "").strip()
 text = re.sub(r"([a-z])([A-Z])", r"\1-\2", text)
 teachers = text.split("-")
-
-
-pepe = NRC(name,int(nrc),blocks,int(quotas),teachers)
-pepe.show_nrc()
