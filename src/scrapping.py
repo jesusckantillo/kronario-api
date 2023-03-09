@@ -8,10 +8,10 @@ import re
 from schec import NRC
 
 
-#URL all  NRC for department
 url_departaments = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_departamento1.php"
-#URL for  obtain information from an nrc
 url_nrcinfo = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_nrc1.php"
+url_courseinfo ="https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_curso1.php"
+
 
 #Open json with dpments info
 dpments_file = "dayta/departamentos.json"
@@ -21,7 +21,6 @@ def read_dpments(dpments_file:json) ->None:
     with open(dpments_file) as content:
         result = json.load(content)
     print(result)
-
 
 def getnrcinfo(code: str)->NRC:
     params={
@@ -89,7 +88,7 @@ def getnrcinfo(code: str)->NRC:
 
 
 
-def get_allnrc_dpt(dpment_code:str)->json:
+def get_allnrc_dpt(dpment_code:str)->list[list[str]]:
     all_nrc =[]
     params = {
     'departamento': dpment_code,
@@ -106,7 +105,7 @@ def get_allnrc_dpt(dpment_code:str)->json:
       all_nrc.append(nrc)
     return all_nrc
 
-def get_allcourses_dpt(dpment_code:str):
+def get_allcourses_dpt(dpment_code:str, dpment_name:str,):
     unique = {}
     all_nrc = get_allnrc_dpt(dpment_code)
     for nrc in all_nrc:
@@ -114,9 +113,26 @@ def get_allcourses_dpt(dpment_code:str):
         class_code = nrc[2]
         if class_name not in unique:
             unique[class_name] = class_code
-    return [[name,code,class_code]for name,code in unique.items()]
-
-print(get_allcourses_dpt("0024"))
-
+    with open(dpment_name, "w") as outfile:
+      json.dump(get_allcourses_dpt("0029"), outfile,indent=4)
 
 
+def get_allnrcbycode(classcode:str):
+    params = {
+        'valida': 'OK',
+        'mat2': classcode[:3],
+        'curso': classcode[3:],
+        'BtnCurso': 'Buscar',
+
+        'datos_periodo': 20310,
+        'nom_periodo': 'Primer Semestre 2023',
+        'datos_nivel': 'PR',
+        'nom_nivel' : 'Pregrado'
+    }
+    response = requests.post(url_courseinfo,params)
+    soup = BeautifulSoup(response.text,"lxml")
+    print(classcode[:3])
+    print(classcode[3:])
+    print(soup.prettify)    
+
+print(getnrcinfo("2894"))
