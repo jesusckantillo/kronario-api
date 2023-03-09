@@ -14,7 +14,7 @@ url_departaments = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/res
 url_nrcinfo = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_nrc1.php"
 
 #Open json with dpments info
-dpments_file = "data/departamentos.json"
+dpments_file = "dayta/departamentos.json"
 
 
 def read_dpments(dpments_file:json) ->None:
@@ -23,7 +23,7 @@ def read_dpments(dpments_file:json) ->None:
     print(result)
 
 
-def getnrc(code: str)->NRC:
+def getnrcinfo(code: str)->NRC:
     params={
     'valida': 'OK',
     'nrc': code,
@@ -54,6 +54,11 @@ def getnrc(code: str)->NRC:
     quotas = five_p.get_text(separator="|").split("|")[3]
 
 
+    #CLASSCODE
+    second_p = all_p[2]
+    classcode = second_p.get_text(separator="|").split("|")[1].strip()
+
+
     #BLOCKS
     #--Extract information from all table rows except for the first one
     blocks =[]
@@ -68,28 +73,24 @@ def getnrc(code: str)->NRC:
 
 
     #TEACHER
-    text = all_p[5].get_text();
+    text = all_p[5].get_text()
     text = text.replace("Profesor(es):", "").strip()
     text = re.sub(r"([a-z])([A-Z])", r"\1-\2", text)
     teachers = text.split("-")
-    print(name)
-    print(nrc)
-    print(teachers)
-    print(blocks)
-    print(quotas)
     return{
         'name':name,
         'nrc':nrc,
         'teachers':teachers,
         'blocks': blocks,
-        'quotas':quotas
+        'quotas':quotas,
+        'classcode':classcode
     }
 
 
 
 
-def get_courses_dpt(dpment_code:str)->json:
-    all_courses =[]
+def get_allnrc_dpt(dpment_code:str)->json:
+    all_nrc =[]
     params = {
     'departamento': dpment_code,
     'datos_periodo': '202310',
@@ -99,10 +100,23 @@ def get_courses_dpt(dpment_code:str)->json:
     soup = BeautifulSoup(response.text,"lxml")
 
     #Get all options
-    all_options = soup.find_all('option')
-    for course in all_options:
-      course = list(map(str.strip,(course.get_text().split("-"))))
-      print(course)
+    all_options = soup.find_all('option')[37:]
+    for nrc in all_options:
+      nrc = list(map(str.strip,(nrc.get_text().split("-"))))
+      all_nrc.append(nrc)
+    return all_nrc
+
+def get_allcourses_dpt(dpment_code:str):
+    unique = {}
+    all_nrc = get_allnrc_dpt(dpment_code)
+    for nrc in all_nrc:
+        class_name = nrc[1]
+        class_code = nrc[2]
+        if class_name not in unique:
+            unique[class_name] = class_code
+    return [[name,code,class_code]for name,code in unique.items()]
+
+print(get_allcourses_dpt("0024"))
 
 
-getnrc("")
+
