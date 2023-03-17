@@ -1,4 +1,4 @@
-from scrapping import webScrapper
+from scrapping import webScrapper, URL_COURSEINFO_BYIST
 from scrapping import URL_DPT
 import json
 
@@ -14,6 +14,5 @@ def update_dpt_classcode()->None:
         json.dump(data,file, indent=4)
         
 def create_classcodejson(dict_list:list[dict])->None:
-    name = dict_list[0]['name']+".json"
-    with open(("data/json_file/"+name),"w") as file:
+    with open(("data/json_file/estructuras.json"),"w") as file:
         json.dump(dict_list,file)
