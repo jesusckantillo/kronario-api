@@ -180,3 +180,6 @@ class webScrapper:
             allnrc.append(webScrapper.read_nrcdiv(div))
         
         return allnrc
+
+
+print(webScrapper.get_allnrcbycode("ELP7195",URL_COURSEINFO_BYIST))
