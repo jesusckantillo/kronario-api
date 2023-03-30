@@ -181,5 +181,5 @@ class webScrapper:
         
         return allnrc
 
-
-print(webScrapper.get_allnrcbycode("ELP7195",URL_COURSEINFO_BYIST))
+with open("datos.json","w") as file:
+ json.dump( webScrapper.get_allnrcbycode("ELP7195",URL_COURSEINFO_BYIST),file)
