@@ -1,0 +1,12 @@
+README.md
+setup.py
+data/__init__.py
+kron_api.egg-info/PKG-INFO
+kron_api.egg-info/SOURCES.txt
+kron_api.egg-info/dependency_links.txt
+kron_api.egg-info/top_level.txt
+src/__init__.py
+src/SchecM/__init__.py
+src/SchecM/schec.py
+src/ScrappingM/__init__.py
+src/ScrappingM/scrapping.py

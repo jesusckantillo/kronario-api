@@ -1,15 +1,18 @@
 # Take data from the university web site
 # Fill in the form to access the page with the tables.
-from bs4 import BeautifulSoup
+import sys
+from pathlib import Path
 import requests
 import json
 import re
+import sys
+from bs4 import BeautifulSoup
+from src.Shec.schec import NRC
 
 URL_DPT = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_departamento1.php"
 URL_NRCINFO = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_nrc1.php"
 URL_COURSEINFO_BYIST = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_curso1.php"
 DPT_FILE = "dayta/departamentos.json"
-
 
 class webScrapper:
 
@@ -181,5 +184,6 @@ class webScrapper:
         
         return allnrc
 
-with open("datos.json","w") as file:
- json.dump( webScrapper.get_allnrcbycode("ELP7195",URL_COURSEINFO_BYIST),file)
+info = webScrapper.getnrcinfo("2894",URL_NRCINFO)
+poo = NRC(info['name'],int(info['nrc']),info['blocks'],int(info['quotas']),info['teachers'])
+poo.__repr__

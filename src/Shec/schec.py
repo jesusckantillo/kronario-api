@@ -1,14 +1,7 @@
 import datetime
 
+
 class Block():
-    """
-    M=Lunes
-    T= Martes
-    W = Miercoles
-    R = Jueves
-    F = Viernes
-    S = Sabado
-    """
     def __init__(self,place:str,day:str,hours:list[datetime.time]) -> None:
         self.place = place
         self.day = day
@@ -32,4 +25,8 @@ class Schedule():
 
     def __repr__(self):
         return "Schedule({})".format(self.nrcs)
+    
+    def autocreate(classcodes: list[str]):
+
+        pass
     
