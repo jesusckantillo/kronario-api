@@ -19,6 +19,9 @@ class NRC():
         self.teachers = teachers
         pass
 
+    def __repr__(self) -> str:
+        return f'NRC(name={self.name}, id={self.id}, blocks={self.blocks}, quotas={self.quotas}, teachers={self.teachers})'
+
 class Schedule():
     def __init__(self,courses: list[NRC]) -> None:
         self.courses = courses
