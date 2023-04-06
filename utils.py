@@ -1,9 +1,9 @@
 import json
-from config.db import Session, engine, Base
+from config.db import db, engine, Base
 from models.models import Department,Classcodes
 
 
-db = Session()
+
 
 
 Base.metadata.create_all(bind=engine)
@@ -28,9 +28,3 @@ load_data()
 
 
 
-
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}

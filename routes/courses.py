@@ -1,13 +1,11 @@
 from fastapi import APIRouter
-from config.db import Session
-from models.models import Department, Classcodes
-from sqlalchemy.orm import serialize
+from config.db import db
+from models.models import Classcodes
 courses = APIRouter()
 
 
 
-courses.get("/courses")
-def get_all_courses():
-    db = Session()
-    result = db.query(Classcodes).all()
-    return{'courses:': serialize(result)}
+@courses.get("/courses")
+def get_all_courses(skip: int = 0,limit:int =100, ):
+    classcodes = db.query(Classcodes).all()
+    return [{'name':cc['name'], 'cc_code': cc['cc_code']} for cc in classcodes]
