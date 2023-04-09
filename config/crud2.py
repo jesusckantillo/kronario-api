@@ -1,7 +1,7 @@
 import json
 import uuid
-from config.db import db, engine, Base
-from models.models import Department,Classcodes
+from config.db import db
+
 
 
 class CRUD():

@@ -1,13 +1,11 @@
 # Take data from the university web site
 # Fill in the form to access the page with the tables.
 import sys
-from pathlib import Path
 import requests
 import json
 import re
 import sys
 from bs4 import BeautifulSoup
-from src.Shec.schec import NRC
 
 URL_DPT = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_departamento1.php"
 URL_NRCINFO = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_nrc1.php"
@@ -185,5 +183,4 @@ class webScrapper:
         return allnrc
 
 info = webScrapper.getnrcinfo("2894",URL_NRCINFO)
-poo = NRC(info['name'],int(info['nrc']),info['blocks'],int(info['quotas']),info['teachers'])
-print(poo)
+print(info)
