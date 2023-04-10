@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column,Integer,String, ForeignKey
 from sqlalchemy.orm import relationship
@@ -11,10 +11,8 @@ Base = declarative_base()
 SessionLocal = sessionmaker(bind=engine)
 db = SessionLocal()
 
-
 class Majors(Base):
     __tablename__ = "majors"
-    __table_args__ = {'extend_existing': True}
     id = Column(Integer,primary_key=True)
     name = Column(String)
     major_code = Column(String)
@@ -22,7 +20,6 @@ class Majors(Base):
     
 class Department(Base):
     __tablename__ = "departments"
-    __table_args__ = {'extend_existing': True}
     id = Column(Integer,primary_key=True)
     name = Column(String)
     dpt_code = Column(Integer)
@@ -30,7 +27,6 @@ class Department(Base):
 
 class Classcodes(Base):
     __tablename__ ="classcodes"
-    __table_args__ = {'extend_existing': True}
     id = Column(Integer,primary_key=True)
     name = Column(String)
     cc_code = Column(String)
@@ -41,4 +37,3 @@ class Classcodes(Base):
 
 
 Base.metadata.create_all(engine)
-

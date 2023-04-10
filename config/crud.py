@@ -1,15 +1,6 @@
 import json
 import uuid
-from config.db import db, engine, Base
-from models.models import Department,Classcodes
-from slqalchemy.orm import Session
-
-
-#Load the data from the JSON 
-# of departments and fill in the
-# list of careers.
-
-#Base.metadata.create_all(bind=engine)
+from config.db import db, Department, Classcodes, Majors
 MAJOR_LIST = {'Administración de Empresas': 'PRE00', 
 'Arquitectura': 'PRE01', 
 'Ciencia de Datos': 'PRE02', 
@@ -35,18 +26,33 @@ MAJOR_LIST = {'Administración de Empresas': 'PRE00',
 'PRE024', 'Odontología': 'PRE025', 'Psicología': 
  'PRE026', 'Relaciones Internacionales': 'PRE027'}
 
-def load_data():
-   # db = Session()
-    with open("data/departamentos.json",'r') as file:
-        data = json.load(file)
-    for element in data:
-        dpt = Department(name=element['NOMBRE_DEL_DPTO'],dpt_code=element['CODE'])
-        classcodes =[]
-        for cc_name, code in element['CLASSCODES'].items():
-            classcodes.append(Classcodes(name=cc_name,cc_code=code,department=dpt))
-        db.add(dpt)
-        db.add_all(classcodes)
-        db.commit()
-    db.close()
 
-load_data()
+class CRUD():
+
+    def __init__(self,db,majors_list):
+        self.db = db
+        self.majors_list = majors_list
+    
+    def load_dpt_data(self,data_route:str):
+        with open(data_route,'r') as file:
+            data = json.load(file)
+        for element in data:
+            classcodes =[]
+            dpt = Department(name=element['NOMBRE_DEL_DPTO'],dpt_code=element['CODE'])
+            for cc_name, code in element['CLASSCODES'].items():
+              classcodes.append(Classcodes(name=cc_name,cc_code=code,department=dpt))
+            self.db.add(dpt)
+            self.db.add_all(classcodes)
+        self.db.commit()
+        self.db.close()
+    
+    def add_majors(self):
+        for name, code in self.majors_list.items():
+            major = Majors(name=name, major_code=code)
+            self.db.add(major)
+        self.db.commit()
+
+crud = CRUD(db, MAJOR_LIST)
+crud.add_majors()
+
+
