@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel
 
@@ -21,10 +21,11 @@ class Classcodes(BaseModel):
     name: str
     cc_code: str
     department_id: int
-    majors_id: int
+    majors_id: Optional[int] = None  # majors_id ahora es opcional
 
     class Config:
         orm_mode = True
+
 
 
 class Department(BaseModel):
@@ -45,3 +46,6 @@ class Majors(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+
