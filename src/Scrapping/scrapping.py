@@ -7,10 +7,13 @@ import re
 import sys
 from bs4 import BeautifulSoup
 
+
+URL_ELECTIVE = "https://pomelo.uninorte.edu.co/pls/prod/bwckctlg.p_disp_course_detail?cat_term_in=202210&subj_code_in=ELG&crse_numb_in=1001"
 URL_DPT = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_departamento1.php"
 URL_NRCINFO = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_nrc1.php"
 URL_COURSEINFO_BYIST = "https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_curso1.php"
 DPT_FILE = "data/departamentos.json"
+
 
 class webScrapper:
 
@@ -161,7 +164,7 @@ class webScrapper:
         return unique
 
     @staticmethod
-    def get_allnrcbycode(classcode: str, url):
+    def get_allnrcbycode(classcode: str):
         params = {
             'valida': 'OK',
             'mat2': classcode[:3],
@@ -173,7 +176,7 @@ class webScrapper:
             'datos_nivel': 'PR',
             'nom_nivel': 'Pregrado'
         }
-        response = requests.post(url, data=params)
+        response = requests.post("https://guayacan02.uninorte.edu.co/4PL1CACI0N35/registro/resultado_curso1.php", data=params)
         soup = BeautifulSoup(response.text, "lxml")
         all_divs = soup.find_all('div', class_='div')
         allnrc = []
@@ -182,5 +185,15 @@ class webScrapper:
         
         return allnrc
 
-info = webScrapper.getnrcinfo("2894",URL_NRCINFO)
-print(info)
+    @staticmethod
+    def get_all_electives_bycode(url_electives,elective_code):
+        params = {
+            'cat_term_in':'202210',
+            'subj_code_in':elective_code[:3],
+            'crse_numb_in' : elective_code[3:]
+
+        }
+        response = requests.get(url_electives,data=params)
+        soup = BeautifulSoup(response.text, 'lxml')
+        print(soup.text)
+        
