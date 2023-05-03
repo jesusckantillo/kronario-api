@@ -1,6 +1,7 @@
 import json
 from config.db import db, Department, Classcodes, Majors,NRC, MajorsClasscodes
 from src.Scrapping.scrapping import webScrapper
+from typing import Optional, List
 DPT_PATH ="data/departamentos.json"
 #Materias de sistemas hasta quinto
 ING_SYS = ["MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
@@ -53,6 +54,9 @@ class CRUD():
         self.db.commit()
         self.db.close()
     
+
+
+    #Add methods
     def add_majors(self):
         for name, code in self.majors_list.items():
             major = Majors(name=name, major_code=code)
@@ -102,15 +106,31 @@ class CRUD():
         self.db.commit()
 
 
+    #Get Methods
 
-
-    #Get
     def get_majors(self):
        return db.query(Majors).all()
-    
 
 
+    def get_majors_classcodes(self,major_code:str):
+       major =  db.query(Majors).filter(Majors.major_code == major_code).first()
+       if major:
+          classcodes = [classcode.name for classcode in major.classcodes]
+          return classcodes
+       
+    def get_classcodes_majors(self,classcode_code:str):
+       classcode =  db.query(Classcodes).filter(Classcodes.cc_code == classcode_code).first()
+       if classcode:
+          classcodes = [major.name for major in classcode.majors]
+          return classcodes
 
-
+    def getallnrcbycc(self, classcodes_list:List[str]):
+       nrcs =[]
+       for classcode in classcodes_list:
+        classcode =  db.query(Classcodes).filter(Classcodes.cc_code == classcode).first()
+        if classcode:
+          nrcs.append(classcode.nrcs)
+       return nrcs[1]
 crud = CRUD(db)
-print(db.query(Majors).all())
+print(crud.getallnrcbycc(["MAT1111","MAT1031"]))
+

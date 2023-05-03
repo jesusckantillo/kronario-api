@@ -17,12 +17,9 @@ class NRC(BaseModel):
 
 
 class Classcodes(BaseModel):
-    id: int
     name: str
     cc_code: str
-    department_id: int
-    majors_id: Optional[int] = None  # majors_id ahora es opcional
-
+    majorsinf: List[Optional[str]]
     class Config:
         orm_mode = True
 
@@ -39,13 +36,12 @@ class Department(BaseModel):
 
 
 class Majors(BaseModel):
-    id: int
     name: str
     major_code: str
-    classcodes: List[Classcodes] = []
-
-    class Config:
-        orm_mode = True
 
 
+class MajorList(BaseModel):
+    majors: List[Majors]
 
+class supraname(BaseModel):
+    name: str

@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship
 
 
 #Creating database
-engine = create_engine('sqlite:///krondb.sqlite', echo=True)
+engine = create_engine('sqlite:///krondb.sqlite')
 Base = declarative_base()
 SessionLocal = sessionmaker(bind=engine)
 db = SessionLocal()
@@ -21,13 +21,13 @@ class MajorsClasscodes(Base):
     classcode_id = Column(Integer, ForeignKey("classcodes.id"))
 
 
-
 class Majors(Base):
     __tablename__ = "majors"
-    id = Column(Integer,primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
     major_code = Column(String)
-    classcodes = relationship("Classcodes",secondary="majors_classcodes", back_populates="majors")
+    classcodes = relationship("Classcodes", secondary="majors_classcodes", back_populates="majors")
+
     
 class Department(Base):
     __tablename__ = "departments"
@@ -37,12 +37,12 @@ class Department(Base):
     classcodes = relationship("Classcodes", backref="department")
 
 class Classcodes(Base):
-    __tablename__ ="classcodes"
-    id = Column(Integer,primary_key=True)
+    __tablename__ = "classcodes"
+    id = Column(Integer, primary_key=True)
     name = Column(String)
     cc_code = Column(String)
     department_id = Column(Integer, ForeignKey("departments.id"))
-    majors_id = Column(Integer, ForeignKey("majors.id"))
+    departments = relationship("Department", back_populates="classcodes")
     majors = relationship("Majors", secondary="majors_classcodes", back_populates="classcodes")
 
 

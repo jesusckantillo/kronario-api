@@ -2,12 +2,10 @@ README.md
 setup.py
 config/__init__.py
 config/crud.py
-config/crud2.py
 config/db.py
 kronario.egg-info/PKG-INFO
 kronario.egg-info/SOURCES.txt
 kronario.egg-info/dependency_links.txt
 kronario.egg-info/top_level.txt
-models/__init__.py
-models/models.py
-models/schemas.py
+schemas/__init__.py
+schemas/schemas.py

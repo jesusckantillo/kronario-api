@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routes.majors import majors
+from api.routers.majors import majors
 
 app = FastAPI()
 app.include_router(majors)
