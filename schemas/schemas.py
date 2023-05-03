@@ -23,8 +23,6 @@ class Classcodes(BaseModel):
     class Config:
         orm_mode = True
 
-
-
 class Department(BaseModel):
     id: int
     name: str
@@ -43,5 +41,5 @@ class Majors(BaseModel):
 class MajorList(BaseModel):
     majors: List[Majors]
 
-class supraname(BaseModel):
-    name: str
+class Schedule(BaseModel):
+    nrcs = List[NRC]

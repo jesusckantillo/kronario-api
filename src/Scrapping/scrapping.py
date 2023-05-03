@@ -197,4 +197,3 @@ class webScrapper:
         soup = BeautifulSoup(response.text, 'lxml')
         print(soup.text)
         
-print(webScrapper.getnrcinfo("2894", URL_NRCINFO))
