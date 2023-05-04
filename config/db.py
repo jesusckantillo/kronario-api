@@ -3,7 +3,8 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import Column,Integer,String, ForeignKey, JSON
 from sqlalchemy.orm import relationship
-
+from typing import List
+from datetime import datetime, timedelta
 
 #Creating database
 engine = create_engine('sqlite:///krondb.sqlite')
@@ -57,6 +58,10 @@ class NRC(Base):
     cc_code = Column(String, ForeignKey("classcodes.cc_code")) # clave foránea
     classcode = relationship("Classcodes", backref="nrcs") # relación con la clase Classcodes
 
-
+    def parser_block(self)->List[datetime,datetime,str]:
+        start_time, end_time = block[1].split(" - ")
+        start_time = datetime.strptime(start_time, '%H%M')
+        end_time = datetime.strptime(end_time, '%H%M')
+        return [start_time,end_time,block[0]]
 
 Base.metadata.create_all(engine)
