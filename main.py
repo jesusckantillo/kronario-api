@@ -1,8 +1,8 @@
 from fastapi import FastAPI
-from routes.courses import courses
+from api.routers.majors import majors
 
 app = FastAPI()
-app.include_router(courses)
+app.include_router(majors)
 
 @app.get(path="/")
 def home():
