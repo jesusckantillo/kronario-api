@@ -35,7 +35,18 @@ class scheduleController():
          result.append((start, end, day))
         return result
 
+    @staticmethod
+    def blocks_has_conflict(blocks1:List["NRC.blocks"],blocks2:List["NRC.blocks"])->None:
+        for block1 in blocks1:
+            start1, end1, day1 = block1
+            for block2 in blocks2:
+                start2, end2, day2 = block2
+                if day1 == day2:
+                    if max(start1,start2) <min(end1,end2):
+                        return True
 
+        return False
+    
     #@staticmethod
     #def nrc_has_conflict(olds_nrcs: "NRC", nrc:"NRC")->bool:
 
@@ -49,4 +60,7 @@ class scheduleController():
 
        # return True
 
-scheduleController.parse_blocks([['F', '0930 - 1128', 'BLOQG2 - 34G2']])
+blocks1 = [[datetime(1900, 1, 1, 9, 30), datetime(1900, 1, 1, 11, 28), 'F']]
+blocks2 = [[datetime(1900, 1, 1, 10, 30), datetime(1900, 1, 1, 12, 28), 'F']]
+result = scheduleController.blocks_has_conflict(blocks1,blocks2)
+print(result)
