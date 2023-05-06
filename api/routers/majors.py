@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from typing import List
 from config.crud import crud
-from schemas.schemas import Majors, MajorList, Classcodes, supraname
+from schemas.schemas import Majors
 
 majors = APIRouter()
 

@@ -14,6 +14,7 @@ class NRC(BaseModel):
 
     class Config:
         orm_mode = True
+        arbitrary_types_allowed = True
 
 
 class Classcodes(BaseModel):
@@ -22,6 +23,7 @@ class Classcodes(BaseModel):
     majorsinf: List[Optional[str]]
     class Config:
         orm_mode = True
+        arbitrary_types_allowed = True
 
 class Department(BaseModel):
     id: int
@@ -31,15 +33,20 @@ class Department(BaseModel):
 
     class Config:
         orm_mode = True
-
+        arbitrary_types_allowed = True
 
 class Majors(BaseModel):
     name: str
     major_code: str
-
+    
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True
 
 class MajorList(BaseModel):
     majors: List[Majors]
 
-class Schedule(BaseModel):
-    nrcs = List[NRC]
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True
+
