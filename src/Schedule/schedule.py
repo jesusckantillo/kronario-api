@@ -54,8 +54,9 @@ class scheduleController():
     
 
     @staticmethod
-    def create_schedule(nrc_list: List["NRC"], classcodes: List["str"])->List[List["NRC"]]:
+    def create_schedule(classcodes: List["str"])->List[List["NRC"]]:
          final_len = len(classcodes)
+         
          list = [element.nrc for element in nrc_list]
 
          #Combinations using itertools

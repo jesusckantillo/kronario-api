@@ -101,7 +101,7 @@ class CRUD():
           return classcodes
 
   
-    def getallnrcbycc(self, classcodes_list:List[str]):
+    def get_allnrc_bycc(self, classcodes_list:List[str]):
        nrcs =[]
        for classcode in classcodes_list:
         classcode =  db.query(Classcodes).filter(Classcodes.cc_code == classcode).first()
@@ -111,5 +111,5 @@ class CRUD():
         #Lets make a 1d array/ lsit
        return [nrc for nrc in  list(itertools.chain(*nrcs))]
 crud = CRUD(db)
-
+print([element.name for element in crud.getallnrcbycc(["MAT1031","IST2088"])])
 
