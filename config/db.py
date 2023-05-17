@@ -43,7 +43,7 @@ class Classcodes(Base):
     name = Column(String)
     cc_code = Column(String)
     department_id = Column(Integer, ForeignKey("departments.id"))
-    departments = relationship("Department", back_populates="classcodes")
+    departments = relationship("Department", back_populates="classcodes", overlaps="department")
     majors = relationship("Majors", secondary="majors_classcodes", back_populates="classcodes")
 
 
@@ -57,6 +57,19 @@ class NRC(Base):
     quotas = Column(Integer)
     cc_code = Column(String, ForeignKey("classcodes.cc_code")) # clave foránea
     classcode = relationship("Classcodes", backref="nrcs") # relación con la clase Classcodes
+
+    def display(self):
+        print(f"Name: {self.name}")
+        print(f"NRC: {self.nrc}")
+        print(f"Teachers: {self.teachers}")
+        print(f"Blocks: {self.blocks}")
+        print(f"Quotas: {self.quotas}")
+        print(f"Classcode: {self.classcode.cc_code}")
+
+    def parse_blocks(blocks) -> List["datetime", "datetime", "str"]:
+        return [[datetime.strptime(time.split(' - ')[0], '%H%M'),
+                 datetime.strptime(time.split(' - ')[1], '%H%M'),
+                 day] for day, time, room, teacher in blocks]
 
 
 Base.metadata.create_all(engine)

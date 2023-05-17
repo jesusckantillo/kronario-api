@@ -197,3 +197,4 @@ class webScrapper:
         soup = BeautifulSoup(response.text, 'lxml')
         print(soup.text)
         
+

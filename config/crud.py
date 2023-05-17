@@ -2,14 +2,11 @@ import json
 from config.db import db, Department, Classcodes, Majors,NRC, MajorsClasscodes
 from src.Scrapping.scrapping import webScrapper
 from typing import Optional, List
+from sqlalchemy import delete
+from sqlalchemy import func
+
 import itertools
-DPT_PATH ="data/departamentos.json"
-#Materias de sistemas hasta quinto
-ING_SYS = ["MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
-
-
-
-
+DPT_PATH ="departamentos.json"
 class CRUD():
 
     #Load-Add
@@ -30,8 +27,6 @@ class CRUD():
         self.db.commit()
         self.db.close()
     
-
-
     #Add methods
     def add_majors(self):
         for name, code in self.majors_list.items():
@@ -76,17 +71,15 @@ class CRUD():
                new_nrc = NRC(**nrc_data)
                self.db.add(new_nrc)
                
-               print("Nuevo NRC agregado")
+               print("NEW NRC ADDED")
          else:
-            print("Ningun classcode encontrado")
+            print("NO CLASSCODE FOUND")
         self.db.commit()
-
 
     #Get Methods
 
     def get_majors(self):
        return db.query(Majors).all()
-
 
     def get_majors_classcodes(self,major_code:str):
        major =  db.query(Majors).filter(Majors.major_code == major_code).first()
@@ -100,16 +93,26 @@ class CRUD():
           classcodes = [major.name for major in classcode.majors]
           return classcodes
 
-  
     def get_allnrc_bycc(self, classcodes_list:List[str]):
        nrcs =[]
        for classcode in classcodes_list:
         classcode =  db.query(Classcodes).filter(Classcodes.cc_code == classcode).first()
         if classcode:
           nrcs.append(classcode.nrcs)
-
         #Lets make a 1d array/ lsit
        return [nrc for nrc in  list(itertools.chain(*nrcs))]
-crud = CRUD(db)
-print([element.name for element in crud.getallnrcbycc(["MAT1031","IST2088"])])
 
+
+    #Aux methods
+
+    def filter_db(self):
+     duplicates_query = db.query(NRC.nrc, func.count(NRC.id)).group_by(NRC.nrc).having(func.count(NRC.id) > 1)
+     for nrc_value, count in duplicates_query:
+         duplicate_records = db.query(NRC).filter(NRC.nrc == nrc_value).all()
+         for duplicate in duplicate_records[1:]:
+            db.delete(duplicate)
+     db.commit()
+
+
+crud = CRUD(db)
+crud.filter_db()

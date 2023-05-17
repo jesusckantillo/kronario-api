@@ -1,0 +1,3 @@
+[['R', '1830 - 1929', 'BLOQG2 - 36G2', 'Andrade Navas - Javier'], ['T', '1730 - 1928', 'BLOQJ1 - 36J', 'Andrade Navas - Javier']]
+[['M', '0930 - 1029', 'BLOQJ1 - 11J', 'JIMENO PABA - MIGUEL']]
+[['R', '1230 - 1428', 'BLOQG2 - 33G2', 'Zuleta Saldarriaga - Yesneri'], ['F', '1230 - 1428', 'BLOQC - 24C', 'Zuleta Saldarriaga - Yesneri'], ['W', '1830 - 2028', 'BLOQG2 - 35G2', 'Zuleta Saldarriaga - Yesneri']]

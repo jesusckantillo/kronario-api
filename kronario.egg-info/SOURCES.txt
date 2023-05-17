@@ -9,3 +9,5 @@ kronario.egg-info/dependency_links.txt
 kronario.egg-info/top_level.txt
 schemas/__init__.py
 schemas/schemas.py
+testing/__init__.py
+testing/test.py

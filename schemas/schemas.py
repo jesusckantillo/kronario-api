@@ -43,10 +43,16 @@ class Majors(BaseModel):
         orm_mode = True
         arbitrary_types_allowed = True
 
-class MajorList(BaseModel):
-    majors: List[Majors]
+class MajorsRequest(BaseModel):
+    major_codes: List[str]
 
+class BlockFilter(BaseModel):
+    day: str
+    start: str
+    end: str
     class Config:
         orm_mode = True
         arbitrary_types_allowed = True
 
+
+    
