@@ -1,5 +1,5 @@
 from typing import List, Optional
-
+from datetime import datetime
 from pydantic import BaseModel
 
 
@@ -20,7 +20,7 @@ class NRC(BaseModel):
 class Classcodes(BaseModel):
     name: str
     cc_code: str
-    majorsinf: List[Optional[str]]
+    majorsinf: List[str]
     class Config:
         orm_mode = True
         arbitrary_types_allowed = True
@@ -46,13 +46,14 @@ class Majors(BaseModel):
 class MajorsRequest(BaseModel):
     major_codes: List[str]
 
-class BlockFilter(BaseModel):
-    day: str
-    start: str
-    end: str
-    class Config:
-        orm_mode = True
-        arbitrary_types_allowed = True
 
 
-    
+class Filter(BaseModel):
+    #The list is in the format [start_time, end_time, day]
+    hours_filters: Optional[List[List[str]]] = []
+    professors_filters: Optional[List[str]] = []
+    def hours_to_datetime(self):
+        if self.hours_filter:
+            self.hours_filter[0] = datetime.strptime(self.hours_filter[0], '%H:%M').time()
+            self.hours_filter[1] = datetime.strptime(self.hours_filter[1], '%H:%M').time()
+        return self

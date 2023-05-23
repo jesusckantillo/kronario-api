@@ -1,20 +1,14 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy import Column,Integer,String, ForeignKey, JSON
-from sqlalchemy.orm import relationship
-from typing import List
-from datetime import datetime, timedelta
+from sqlalchemy.orm import declarative_base, relationship, sessionmaker
+from sqlalchemy import Column, Integer, String, ForeignKey
+from datetime import datetime, time
 
-#Creating database
 engine = create_engine('sqlite:///krondb.sqlite')
 Base = declarative_base()
 SessionLocal = sessionmaker(bind=engine)
 db = SessionLocal()
 
 
-
-#Association table:
 class MajorsClasscodes(Base):
     __tablename__ = "majors_classcodes"
     id = Column(Integer, primary_key=True)
@@ -29,13 +23,14 @@ class Majors(Base):
     major_code = Column(String)
     classcodes = relationship("Classcodes", secondary="majors_classcodes", back_populates="majors")
 
-    
+
 class Department(Base):
     __tablename__ = "departments"
-    id = Column(Integer,primary_key=True)
+    id = Column(Integer, primary_key=True)
     name = Column(String)
     dpt_code = Column(Integer)
     classcodes = relationship("Classcodes", backref="department")
+
 
 class Classcodes(Base):
     __tablename__ = "classcodes"
@@ -45,6 +40,7 @@ class Classcodes(Base):
     department_id = Column(Integer, ForeignKey("departments.id"))
     departments = relationship("Department", back_populates="classcodes", overlaps="department")
     majors = relationship("Majors", secondary="majors_classcodes", back_populates="classcodes")
+    nrcs = relationship("NRC", backref="classcode")  # relación uno a muchos con NRC
 
 
 class NRC(Base):
@@ -52,24 +48,32 @@ class NRC(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     nrc = Column(String)
-    teachers = Column(JSON)
-    blocks = Column(JSON)
     quotas = Column(Integer)
-    cc_code = Column(String, ForeignKey("classcodes.cc_code")) # clave foránea
-    classcode = relationship("Classcodes", backref="nrcs") # relación con la clase Classcodes
+    cc_code = Column(String, ForeignKey("classcodes.cc_code"))  # clave foránea
 
-    def display(self):
-        print(f"Name: {self.name}")
-        print(f"NRC: {self.nrc}")
-        print(f"Teachers: {self.teachers}")
-        print(f"Blocks: {self.blocks}")
-        print(f"Quotas: {self.quotas}")
-        print(f"Classcode: {self.classcode.cc_code}")
-
-    def parse_blocks(blocks) -> List["datetime", "datetime", "str"]:
-        return [[datetime.strptime(time.split(' - ')[0], '%H%M'),
-                 datetime.strptime(time.split(' - ')[1], '%H%M'),
-                 day] for day, time, room, teacher in blocks]
+    blocks = relationship("Block", backref="nrc")  # relación uno a muchos con Block
 
 
+class Block(Base):
+    __tablename__ = "blocks"
+    id = Column(Integer, primary_key=True)
+    nrc_id = Column(Integer, ForeignKey("nrc.id"))
+    day = Column(String)
+    time_start = Column(String)
+    time_end = Column(String)
+    room = Column(String)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"))  # clave foránea
+
+    def parse_time(self, time_str: str) -> time:
+        return datetime.strptime(time_str, "%H%M").time()
+
+
+class Teacher(Base):
+    __tablename__ = "teachers"
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    blocks = relationship("Block", backref="teacher")  # relación uno a muchos con Block
+
+
+# Crear tablas en la base de datos
 Base.metadata.create_all(engine)
