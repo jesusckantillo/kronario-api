@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 import itertools
 from config.crud import crud
-from schemas.schemas import Majors, MajorsRequest, Classcodes
+from schemas.schemas import Majors, Classcodes
 
 majors = APIRouter()
 

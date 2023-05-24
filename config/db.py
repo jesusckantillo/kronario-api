@@ -72,7 +72,7 @@ class Teacher(Base):
     __tablename__ = "teachers"
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    blocks = relationship("Block", backref="teacher")  # relación uno a muchos con Block
+    blocks = relationship("Block", backref="teacher")
 
 
 # Crear tablas en la base de datos

@@ -1,13 +1,12 @@
 from __future__ import annotations
 import json
+import itertools
 from config.db import db, Department, Classcodes, Majors, NRC, MajorsClasscodes, Block, Teacher
-from schemas.schemas import Filter
+from schemas.schemas import TimeFilter, ProfessorFilter
 from src.Scrapping.scrapping import webScrapper
-#from src.Schedule.schedule import scheduleController
 from typing import List
 from sqlalchemy import func
-
-import itertools
+from sqlalchemy.orm import joinedload
 
 DPT_PATH = "departamentos.json"
 MAJOR_LIST = {'Administración de Empresas': 'PRE00', 
@@ -132,15 +131,13 @@ class CRUD():
 
             self.db.commit()
 
-
-
     #Get Methods
 
     def get_majors(self):
        return db.query(Majors).all()
 
-    def get_classcode(self, code:str):
-         return db.query(Classcodes).first()
+    def get_classcode(self, code: str):
+        return db.query(Classcodes).filter(Classcodes.cc_code == code).first()
 
 
     def get_majors_classcodes(self,major_code:str):
@@ -154,38 +151,6 @@ class CRUD():
        if classcode:
           classcodes = [major.name for major in classcode.majors]
           return classcodes
-
-    def get_allnrc_bycc(self, classcodes_list: List[str], filter: Filter = None) -> List[NRC]:
-        def blocks_has_conflict(blocks1: List[Block], blocks2: List[Block]) -> bool:
-          return any(
-            max(block1.parse_time(block1.time_start),
-                block2.parse_time(block2.time_start)) <
-            min(block1.parse_time(block1.time_end),
-                block2.parse_time(block2.time_end)) and
-            block1.day == block2.day
-            for block1 in blocks1
-            for block2 in blocks2
-           )
-
-        nrcs = []
-        for classcode in classcodes_list:
-            classcode_obj = db.query(Classcodes).filter(Classcodes.cc_code == classcode).first()
-            if classcode_obj:
-                nrcs.extend(classcode_obj.nrcs)
-
-        filtered_nrcs = []
-        if filter:
-            for nrc in nrcs:
-                blocks = nrc.blocks
-                if not blocks_has_conflict(blocks, filter.hours_filters) and \
-                        not any(professor in filter.professors_filters for professor in nrc.teachers):
-                    filtered_nrcs.append(nrc)
-        else:
-            filtered_nrcs = nrcs
-
-        return filtered_nrcs
-
-    
 
     def filter_db(self):
      duplicates_query = db.query(NRC.nrc, func.count(NRC.id)).group_by(NRC.nrc).having(func.count(NRC.id) > 1)
@@ -201,4 +166,50 @@ class CRUD():
             return [major.name for major in classcode.majors]
         else:
             return []
+
+    def get_professors_by_classcodes(self, classcodes_list: List[str]) -> List[tuple]:
+        professor_dict = {}
+        professors = (
+            db.query(Teacher.name, Classcodes.cc_code)
+            .join(Block, Block.teacher_id == Teacher.id)
+            .join(NRC, NRC.id == Block.nrc_id)
+            .join(Classcodes, Classcodes.cc_code == NRC.cc_code)
+            .filter(Classcodes.cc_code.in_(classcodes_list))
+            .distinct()
+            .all()
+        )
+
+        for professor, classcode in professors:
+            if professor in professor_dict:
+                professor_dict[professor].append(self.get_classcode(classcode).name)
+            else:
+                professor_dict[professor] = [self.get_classcode(classcode).name]
+
+        return [(professor, classcodes) for professor, classcodes in professor_dict.items()]
+
+
+    def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
+                    professor_filter: ProfessorFilter = None) -> List[NRC]:
+        query = db.query(NRC).join(Classcodes).filter(Classcodes.cc_code.in_(classcodes_list))
+
+        if len(time_filters)>0:
+            for time_filter in time_filters:
+                time_slots = time_filter.time_slots
+                day = time_filter.day
+                for time_slot in time_slots:
+                    start_time = time_slot.start_time
+                    end_time = time_slot.end_time
+                    query = query.filter(NRC.blocks.any(Block.day == day,
+                                                        Block.time_start >= start_time,
+                                                        Block.time_end <= end_time))
+
+        if professor_filter:
+            professors = professor_filter.professors
+            block_query = db.query(Block.id).join(Teacher).filter(Teacher.name.notin_(professors)).subquery()
+            query = query.filter(NRC.blocks.any(Block.id.in_(block_query)))
+
+        nrcs = query.options(joinedload(NRC.classcode)).all()
+        return nrcs
+
+
 crud = CRUD(db)

@@ -1,5 +1,5 @@
 from typing import List, Optional
-from datetime import datetime
+from datetime import datetime, time
 from pydantic import BaseModel
 
 
@@ -43,17 +43,26 @@ class Majors(BaseModel):
         orm_mode = True
         arbitrary_types_allowed = True
 
-class MajorsRequest(BaseModel):
-    major_codes: List[str]
+
+class Teacher(BaseModel):
+    id: int
+    name: str
+    classcodes_name: List[str] = []
+
+    class Config:
+        orm_mode = True
+        arbitrary_types_allowed = True
 
 
+#Filter models
 
-class Filter(BaseModel):
-    #The list is in the format [start_time, end_time, day]
-    hours_filters: Optional[List[List[str]]] = []
-    professors_filters: Optional[List[str]] = []
-    def hours_to_datetime(self):
-        if self.hours_filter:
-            self.hours_filter[0] = datetime.strptime(self.hours_filter[0], '%H:%M').time()
-            self.hours_filter[1] = datetime.strptime(self.hours_filter[1], '%H:%M').time()
-        return self
+class TimeSlot(BaseModel):
+    start_time: Optional[str]
+    end_time: Optional[str]
+
+class TimeFilter(BaseModel):
+    time_slots: List[TimeSlot]
+    day: str
+
+class ProfessorFilter(BaseModel):
+    professors: List[str] 
