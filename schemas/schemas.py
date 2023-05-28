@@ -25,8 +25,8 @@ class Schedule(BaseModel):
 
 class Classcodes(BaseModel):
     name: str
-    cc_code: str
-    majorsinf: List[str]
+    id: str
+    category: List[str]
     class Config:
         orm_mode = True
         arbitrary_types_allowed = True

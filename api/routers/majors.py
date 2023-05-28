@@ -18,5 +18,5 @@ async def get_majors_classcodes(major_data: List[Majors]):
     classcodes = list(itertools.chain.from_iterable([crud.get_majors_classcodes(major.id) for major in major_data]))
     majors_sent = [major.name for major in major_data]
     print(majors)
-    cc = [Classcodes(name=classcode.name, cc_code=classcode.cc_code,majorsinf=[major.name for major in classcode.majors if major.name in majors_sent])for classcode in classcodes]
+    cc = [Classcodes(name=classcode.name, id=classcode.cc_code,category=[major.name for major in classcode.majors if major.name in majors_sent])for classcode in classcodes]
     return cc
