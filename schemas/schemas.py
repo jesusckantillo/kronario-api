@@ -43,7 +43,8 @@ class Department(BaseModel):
 
 class Majors(BaseModel):
     name: str
-    major_code: str
+    id: str
+    category: str
     
     class Config:
         orm_mode = True
