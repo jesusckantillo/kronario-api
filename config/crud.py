@@ -10,7 +10,11 @@ from sqlalchemy import func, or_, and_
 DPT_PATH = "departamentos.json"
 
 
-ING_ELEC =["IEL1011","FIS1010","IST4360","IEL1021","IEN4020","EST7042","IEN4120","IEN4020","IEN4120","IEN4030", "IEL4010","IEN7211","IEN4100","IEN7135","IEN7220","IEL8435","IEN7065","IEN7136","IEN7123","IEN8430","IEL4045","MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
+ING_ELEC = ['IEL1011', 'FIS1010', 'IEL1021', 'IEN4020', 'EST7042', 'IEN4120', 'IEN4020', 'IEN4120', 'IEN4030', 'IEL4010',
+ 'IEN7211', 'IEN4100', 'IEN7135', 'IEN7220', 'IEL8435', 'IEN7065', 'IEN7136', 'IEN7123', 'IEN8430', 'IEL4045',
+ 'MAT1031', 'MAT1101', 'CAS3020', 'MAT1111', 'FIS1023', 'CAS3030', 'MAT1121', 'FIS1043', 'MAT4011', 'FIS1043',
+ 'MAT4021', 'EST7042']
+
 
 
 
@@ -171,7 +175,7 @@ class CRUD():
             return []
 
     def get_professors_by_classcodes(self, classcodes_list: List[str]) -> List[tuple]:
-        professor_dict = {}
+        professor_list = []
         professors = (
             db.query(Teacher.name, Classcodes.cc_code)
             .join(Block, Block.teacher_id == Teacher.id)
@@ -181,14 +185,11 @@ class CRUD():
             .distinct()
             .all()
         )
-
+        print(f'professors: {professors}')
         for professor, classcode in professors:
-            if professor in professor_dict:
-                professor_dict[professor].append(self.get_classcode(classcode).name)
-            else:
-                professor_dict[professor] = [self.get_classcode(classcode).name]
+            professor_list.append((professor, self.get_classcode(classcode).name))
 
-        return [(professor, classcodes) for professor, classcodes in professor_dict.items()]
+        return professor_list
 
 
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
@@ -218,7 +219,15 @@ class CRUD():
         nrcs = query.all()
         return nrcs
 
+    def remove_major_classcodes(self, major_code: str):
+        major = self.db.query(Majors).filter(Majors.major_code == major_code).first()
 
+        if major:
+            self.db.query(MajorsClasscodes).filter(MajorsClasscodes.major_id == major.id).delete()
+            self.db.commit()
+            print("Relaciones eliminadas exitosamente.")
+        else:
+            print("Major no encontrado.")
 
 
 crud = CRUD(db)
