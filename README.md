@@ -2,6 +2,7 @@
 The Kronario project is a tool used to obtain university timetable information and organize it more efficiently. With Kronario, you will be able to create timetables from filters and specific options.
 
 ## Skills to be developed
+
 * Web Scrapping
 * First foray into web development
 * API REST
@@ -9,3 +10,15 @@ The Kronario project is a tool used to obtain university timetable information a
 * Permutations and combinations of a set 
 * HTTP Requests in Python
 * Maybe docker
+
+## Dependencies
+* FastApi
+* lxml
+* SQLalchemy
+* Pydantic
+* bs4
+* uvicorn
+
+## Start API
+    in the root:
+        -uvicorn main:app --reload

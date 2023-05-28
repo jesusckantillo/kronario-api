@@ -53,6 +53,28 @@ class NRC(Base):
 
     blocks = relationship("Block", backref="nrc")  # relación uno a muchos con Block
 
+    def to_dict(self) -> dict:
+        nrc_dict = {
+            "name": self.name,
+            "nrc": self.nrc,
+            "quotas": self.quotas,
+            "cc_code": self.cc_code,
+            "blocks": []
+        }
+
+        for block in self.blocks:
+            teacher_name = block.teacher.name if block.teacher else None
+            block_dict = {
+                "day": block.day,
+                "time_start": block.time_start,
+                "time_end": block.time_end,
+                "room": block.room,
+                "teacher_name": teacher_name
+            }
+            nrc_dict["blocks"].append(block_dict)
+
+        return nrc_dict# relación uno a muchos con Block
+
 
 class Block(Base):
     __tablename__ = "blocks"

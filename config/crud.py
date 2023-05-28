@@ -1,38 +1,14 @@
 from __future__ import annotations
 import json
-import itertools
 from config.db import db, Department, Classcodes, Majors, NRC, MajorsClasscodes, Block, Teacher
 from schemas.schemas import TimeFilter, ProfessorFilter
 from src.Scrapping.scrapping import webScrapper
 from typing import List
-from sqlalchemy import func
-from sqlalchemy.orm import joinedload
+from sqlalchemy import func, or_, and_
+
 
 DPT_PATH = "departamentos.json"
-MAJOR_LIST = {'Administración de Empresas': 'PRE00', 
-'Arquitectura': 'PRE01', 
-'Ciencia de Datos': 'PRE02', 
-'Ciencia Política y Gobierno': 'PRE03',
- 'Comunicación Social y Periodismo': 'PRE04', 
- 'Contaduría Pública': 'PRE05', 'Derecho': 'PRE06', 
- 'Diseño Gráfico': 'PRE07', 
- 'Diseño Industrial': 'PRE08', 
- 'Economía': 'PRE09', 
- 'Enfermería': 'PRE010', 
- 'Filosofía y Humanidades': 'PRE011',
-'Geología': 'PRE012', 
-'Ingeniería Civil': 'PRE013', 
-'Ingeniería Eléctrica': 'PRE014', 
-'Ingeniería Electrónica': 'PRE015',
- 'Ingeniería Industrial': 'PRE016', 
-'Ingeniería Mecánica': 'PRE017',
-'Ingeniería de Sistemas y Computación': 'PRE018',
-'Lenguas Modernas y Cultura': 'PRE019',
- 'Licenciatura en Educación Infantil': 'PRE020',
-'Matemáticas': 'PRE021', 'Medicina': 'PRE022',
- 'Música': 'PRE023', 'Negocios Internacionales': 
-'PRE024', 'Odontología': 'PRE025', 'Psicología': 
- 'PRE026', 'Relaciones Internacionales': 'PRE027'}
+
 ING_SYS = ["MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
 
 
@@ -43,6 +19,30 @@ class CRUD():
     # Load-Add
     def __init__(self, db):
         self.db = db
+        self.majors = {'Administración de Empresas': 'PRE00', 
+        'Arquitectura': 'PRE01', 
+        'Ciencia de Datos': 'PRE02', 
+        'Ciencia Política y Gobierno': 'PRE03',
+        'Comunicación Social y Periodismo': 'PRE04', 
+        'Contaduría Pública': 'PRE05', 'Derecho': 'PRE06', 
+        'Diseño Gráfico': 'PRE07', 
+        'Diseño Industrial': 'PRE08', 
+        'Economía': 'PRE09', 
+        'Enfermería': 'PRE010', 
+        'Filosofía y Humanidades': 'PRE011',
+        'Geología': 'PRE012', 
+        'Ingeniería Civil': 'PRE013', 
+        'Ingeniería Eléctrica': 'PRE014', 
+        'Ingeniería Electrónica': 'PRE015',
+        'Ingeniería Industrial': 'PRE016', 
+        'Ingeniería Mecánica': 'PRE017',
+        'Ingeniería de Sistemas y Computación': 'PRE018',
+        'Lenguas Modernas y Cultura': 'PRE019',
+        'Licenciatura en Educación Infantil': 'PRE020',
+        'Matemáticas': 'PRE021', 'Medicina': 'PRE022',
+        'Música': 'PRE023', 'Negocios Internacionales': 
+        'PRE024', 'Odontología': 'PRE025', 'Psicología': 
+        'PRE026', 'Relaciones Internacionales': 'PRE027'}
 
     def load_dpt_data(self, data_route: str):
         with open(data_route, 'r') as file:
@@ -56,6 +56,10 @@ class CRUD():
             self.db.add_all(classcodes)
         self.db.commit()
         self.db.close()
+
+
+
+
 
     # Add methods
     def add_majors(self, majors_list: list[str]):
@@ -85,8 +89,8 @@ class CRUD():
         else:
             print("Major o Classcode no encontrados")
 
-    def add_nrc(self, ist_list: list):
-        for classcode_code in ist_list:
+    def add_nrc(self, code_list: list):
+        for classcode_code in code_list:
             classcode_ob = self.db.query(Classcodes).filter(Classcodes.cc_code == classcode_code).first()
             if classcode_ob:
                 nrc_list = webScrapper.get_allnrcbycode(classcode_code)
@@ -187,29 +191,38 @@ class CRUD():
 
         return [(professor, classcodes) for professor, classcodes in professor_dict.items()]
 
+      
+
 
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
-                    professor_filter: ProfessorFilter = None) -> List[NRC]:
+                        professor_filter: ProfessorFilter = None) -> List[NRC]:
         query = db.query(NRC).join(Classcodes).filter(Classcodes.cc_code.in_(classcodes_list))
 
-        if len(time_filters)>0:
+        if time_filters:
+            time_conditions = []
             for time_filter in time_filters:
                 time_slots = time_filter.time_slots
                 day = time_filter.day
+                time_slot_conditions = []
                 for time_slot in time_slots:
                     start_time = time_slot.start_time
                     end_time = time_slot.end_time
-                    query = query.filter(NRC.blocks.any(Block.day == day,
-                                                        Block.time_start >= start_time,
-                                                        Block.time_end <= end_time))
+                    time_slot_conditions.append(
+                        and_(Block.day == day, Block.time_start >= start_time, Block.time_end <= end_time)
+                    )
+                time_conditions.append(or_(*time_slot_conditions))
+            query = query.filter(or_(*time_conditions))
 
         if professor_filter:
             professors = professor_filter.professors
             block_query = db.query(Block.id).join(Teacher).filter(Teacher.name.notin_(professors)).subquery()
             query = query.filter(NRC.blocks.any(Block.id.in_(block_query)))
 
-        nrcs = query.options(joinedload(NRC.classcode)).all()
+        nrcs = query.all()
         return nrcs
 
 
+
+
 crud = CRUD(db)
+crud.filter_db()

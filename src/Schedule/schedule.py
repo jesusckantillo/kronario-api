@@ -27,25 +27,32 @@ class scheduleController():
 
     @staticmethod
     def check_combination(combination: List[NRC]) -> bool:
-        print(combination)
         return all(not scheduleController.nrc_has_conflict(combination[:i], combination[i])
                    for i in range(1, len(combination)))
 
-    @staticmethod
-    def get_unique_combinations(combinations: List[List["NRC"]]) -> List:
-        print(combinations)
-        return [combination for combination in combinations
-                if len(set(nrc.classcode.cc_code for nrc in combination)) == len(combination)]
 
     @staticmethod
-    def create_schedule(classcodes: List["str"]) -> List[List["NRC"]]:
+    def get_unique_combinations(combinations: List[List["NRC"]]) -> List[List["NRC"]]:
+        unique_combinations = []
+
+        for combination in combinations:
+            classcodes = set(nrc.name for nrc in combination)
+            if len(classcodes) == len(combination):
+                
+                unique_combinations.append(combination)
+
+        return unique_combinations
+
+
+    @staticmethod
+    def create_schedule(classcodes: List["str"],time:List[TimeFilter]=None,professor:ProfessorFilter=None ) -> List[List["NRC"]]:
         final_len = len(classcodes)
-        
-        nrc_list = crud.get_allnrc_bycc(classcodes)
+        nrc_list = crud.get_allnrc_bycc(classcodes, time, professor)
         combinations = itertools.combinations(nrc_list, final_len)
         combinations = list(combinations)
+        
         combinations = [list(tuple) for tuple in combinations]
-        print(combinations)# Convertir a lista directamente
+
         combinations = scheduleController.get_unique_combinations(combinations)
         valid_combinations = [combination for combination in combinations
                               if scheduleController.check_combination(combination)]
