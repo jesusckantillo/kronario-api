@@ -59,20 +59,14 @@ class NRC(Base):
             "nrc": self.nrc,
             "quotas": self.quotas,
             "cc_code": self.cc_code,
+            "teachers": None,
             "blocks": []
         }
-
-        for block in self.blocks:
-            teacher_name = block.teacher.name if block.teacher else None
-            block_dict = {
-                "day": block.day,
-                "time_start": block.time_start,
-                "time_end": block.time_end,
-                "room": block.room,
-                "teacher_name": teacher_name
-            }
-            nrc_dict["blocks"].append(block_dict)
-
+        block_list = [[block.day,f"{block.time_start} - {block.time_end}",block.room] for block in self.blocks]
+        teachers = [block.teacher.name for block in self.blocks]
+        nrc_dict["blocks"].append(block_list)
+        nrc_dict["teachers"]  = teachers
+        nrc_dict["teachers"]  = set(nrc_dict["teachers"])
         return nrc_dict# relación uno a muchos con Block
 
 

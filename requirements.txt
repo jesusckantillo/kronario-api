@@ -1,0 +1,21 @@
+anyio==3.6.2
+beautifulsoup4==4.12.2
+bs4==0.0.1
+certifi==2022.12.7
+charset-normalizer==3.1.0
+click==8.1.3
+fastapi==0.95.1
+greenlet==2.0.2
+h11==0.14.0
+idna==3.4
+-e git+git@github.com:jesusckantillo/kronario-api.git@f21e8ed97641d4a9219a96c9a56d69315ed6f5de#egg=kronario
+lxml==4.9.2
+pydantic==1.10.7
+requests==2.30.0
+sniffio==1.3.0
+soupsieve==2.4.1
+SQLAlchemy==2.0.12
+starlette==0.26.1
+typing-extensions==4.5.0
+urllib3==2.0.2
+uvicorn==0.22.0

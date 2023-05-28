@@ -9,7 +9,8 @@ from sqlalchemy import func, or_, and_
 
 DPT_PATH = "departamentos.json"
 
-ING_SYS = ["MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
+
+ING_ELEC =["IEL1011","FIS1010","IST4360","IEL1021","IEN4020","EST7042","IEN4120","IEN4020","IEN4120","IEN4030", "IEL4010","IEN7211","IEN4100","IEN7135","IEN7220","IEL8435","IEN7065","IEN7136","IEN7123","IEN8430","IEL4045","MAT1031","MAT1101","IST010","IST2088","CAS3020","MAT1111","FIS1023","IST2089","CAS3030","MAT1121","FIS1043","IST4021" ,"IST2110","MAT4011","FIS1043","IST4031","MAT4021","EST7042","IST4310","IST4330","IST7072"]
 
 
 
@@ -56,8 +57,6 @@ class CRUD():
             self.db.add_all(classcodes)
         self.db.commit()
         self.db.close()
-
-
 
 
 
@@ -135,8 +134,8 @@ class CRUD():
 
             self.db.commit()
 
-    #Get Methods
 
+    #Get Methods
     def get_majors(self):
        return db.query(Majors).all()
 
@@ -190,8 +189,6 @@ class CRUD():
                 professor_dict[professor] = [self.get_classcode(classcode).name]
 
         return [(professor, classcodes) for professor, classcodes in professor_dict.items()]
-
-      
 
 
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
