@@ -56,7 +56,7 @@ class NRC(Base):
     def to_dict(self) -> dict:
         nrc_dict = {
             "name": self.name,
-            "nrc": self.nrc,
+            "NRC": self.nrc,
             "quotas": self.quotas,
             "cc_code": self.cc_code,
             "teachers": None,
