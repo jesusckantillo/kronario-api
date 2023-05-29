@@ -64,7 +64,7 @@ class NRC(Base):
         }
         block_list = [[block.day,f"{block.time_start} - {block.time_end}",block.room] for block in self.blocks]
         teachers = [block.teacher.name for block in self.blocks]
-        nrc_dict["blocks"].append(block_list)
+        nrc_dict["blocks"] = block_list
         nrc_dict["teachers"]  = teachers
         nrc_dict["teachers"]  = set(nrc_dict["teachers"])
         return nrc_dict# relación uno a muchos con Block
