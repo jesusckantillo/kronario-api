@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 from config.db import db, Department, Classcodes, Majors, NRC, MajorsClasscodes, Block, Teacher
+from datetime import datetime, time
 from schemas.schemas import TimeFilter, ProfessorFilter
 from src.Scrapping.scrapping import webScrapper
 from typing import List
@@ -192,32 +193,39 @@ class CRUD():
         return professor_list
 
 
+
+
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
-                        professor_filter: ProfessorFilter = None) -> List[NRC]:
-        query = db.query(NRC).join(Classcodes).filter(Classcodes.cc_code.in_(classcodes_list))
+                            professor_filter: ProfessorFilter = None) -> List[NRC]:
+            query = db.query(NRC).join(Classcodes).join(Block).filter(Classcodes.cc_code.in_(classcodes_list))
 
-        if time_filters:
-            time_conditions = []
-            for time_filter in time_filters:
-                time_slots = time_filter.time_slots
-                day = time_filter.day
-                time_slot_conditions = []
-                for time_slot in time_slots:
-                    start_time = time_slot.start_time
-                    end_time = time_slot.end_time
-                    time_slot_conditions.append(
-                        and_(Block.day == day, Block.time_start >= start_time, Block.time_end <= end_time)
-                    )
-                time_conditions.append(or_(*time_slot_conditions))
-            query = query.filter(or_(*time_conditions))
+            if time_filters:
+                time_conditions = []
+                for time_filter in time_filters:
+                    hora = time_filter.hora
+                    columna = time_filter.columna
 
-        if professor_filter:
-            professors = professor_filter.professors
-            block_query = db.query(Block.id).join(Teacher).filter(Teacher.name.notin_(professors)).subquery()
-            query = query.filter(NRC.blocks.any(Block.id.in_(block_query)))
+                    # Convierte la hora en formato HH:MM a un objeto de tipo datetime.time
+                    hora_obj = datetime.strptime(hora, '%H:%M').time()
 
-        nrcs = query.all()
-        return nrcs
+                    # Realiza la comparación de tiempo
+                    time_slot_conditions = [
+                        and_(Block.day == columna,
+                            or_(Block.time_start >= hora_obj, Block.time_end <= hora_obj),
+                            or_(Block.time_start <= hora_obj, Block.time_end >= hora_obj))
+                    ]
+                    time_conditions.append(and_(*time_slot_conditions))
+                query = query.filter(or_(*time_conditions))
+
+            if professor_filter:
+                professors = professor_filter.professors
+                block_ids = db.query(Block.id).join(Teacher).filter(Teacher.name.in_(professors)).subquery()
+                query = query.filter(NRC.blocks.any(Block.id.notin_(block_ids)))
+
+            nrcs = query.all()
+            return nrcs
+
+
 
     def remove_major_classcodes(self, major_code: str):
         major = self.db.query(Majors).filter(Majors.major_code == major_code).first()
@@ -231,4 +239,3 @@ class CRUD():
 
 
 crud = CRUD(db)
-crud.filter_db()

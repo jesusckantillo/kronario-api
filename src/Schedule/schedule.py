@@ -50,7 +50,6 @@ class scheduleController():
         nrc_list = crud.get_allnrc_bycc(classcodes, time, professor)
         combinations = itertools.combinations(nrc_list, final_len)
         combinations = list(combinations)
-        
         combinations = [list(tuple) for tuple in combinations]
 
         combinations = scheduleController.get_unique_combinations(combinations)

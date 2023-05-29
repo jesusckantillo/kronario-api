@@ -62,13 +62,10 @@ class Teacher(BaseModel):
 
 #Filter models
 
-class TimeSlot(BaseModel):
-    start_time: str
-    end_time: str
-
 class TimeFilter(BaseModel):
-    time_slots: List[TimeSlot]
-    day: str
+    hora: str
+    columna: str
+
 
 class ProfessorFilter(BaseModel):
     professors: List[str] 
