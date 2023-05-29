@@ -40,7 +40,7 @@ async def create_schedule(info:dict):
     if len(info["time"]) ==0:
         time = None
     else:
-        time = [schemas.schemas.TimeFilter(**time) for time in info["time"]]
+        time = [schemas.schemas.TimeFilter(hora=time["hora"],columna=time["columna"]) for time in info["time"]]
     if len(info["professors"]) ==0:
         professor = None
     else:

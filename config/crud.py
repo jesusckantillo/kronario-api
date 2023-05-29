@@ -9,12 +9,10 @@ from sqlalchemy import func, or_, and_
 
 
 DPT_PATH = "departamentos.json"
+ING_BASYC_CICLE = ["MAT1101","MAT1031","IBA0022","MAT1111","IST2088","FIS1043","FIS1023","FIS1033","MAT1121","MAT4011"]
 
 
-ING_ELEC = ['IEL1011', 'FIS1010', 'IEL1021', 'IEN4020', 'EST7042', 'IEN4120', 'IEN4020', 'IEN4120', 'IEN4030', 'IEL4010',
- 'IEN7211', 'IEN4100', 'IEN7135', 'IEN7220', 'IEL8435', 'IEN7065', 'IEN7136', 'IEN7123', 'IEN8430', 'IEL4045',
- 'MAT1031', 'MAT1101', 'CAS3020', 'MAT1111', 'FIS1023', 'CAS3030', 'MAT1121', 'FIS1043', 'MAT4011', 'FIS1043',
- 'MAT4021', 'EST7042']
+
 
 
 
@@ -196,35 +194,34 @@ class CRUD():
 
 
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: List[TimeFilter] = [],
-                            professor_filter: ProfessorFilter = None) -> List[NRC]:
-            query = db.query(NRC).join(Classcodes).join(Block).filter(Classcodes.cc_code.in_(classcodes_list))
+                                professor_filter: ProfessorFilter = None) -> List[NRC]:
+                query = db.query(NRC).join(Classcodes).join(Block).filter(Classcodes.cc_code.in_(classcodes_list))
 
-            if time_filters:
-                time_conditions = []
-                for time_filter in time_filters:
-                    hora = time_filter.hora
-                    columna = time_filter.columna
+                if time_filters:
+                    time_conditions = []
+                    for time_filter in time_filters:
+                        hora = time_filter.hora
+                        columna = time_filter.columna
 
-                    # Convierte la hora en formato HH:MM a un objeto de tipo datetime.time
-                    hora_obj = datetime.strptime(hora, '%H:%M').time()
+                        # Convierte la hora en formato HH:MM a un objeto de tipo datetime.time
+                        hora_obj = datetime.strptime(hora, '%H:%M').time()
 
-                    # Realiza la comparación de tiempo
-                    time_slot_conditions = [
-                        and_(Block.day == columna,
-                            or_(Block.time_start >= hora_obj, Block.time_end <= hora_obj),
-                            or_(Block.time_start <= hora_obj, Block.time_end >= hora_obj))
-                    ]
-                    time_conditions.append(and_(*time_slot_conditions))
-                query = query.filter(or_(*time_conditions))
+                        # Realiza la comparación de tiempo
+                        time_slot_conditions = [
+                            and_(Block.day == columna,
+                                or_(Block.time_start >= hora_obj, Block.time_end <= hora_obj),
+                                or_(Block.time_start <= hora_obj, Block.time_end >= hora_obj))
+                        ]
+                        time_conditions.append(and_(*time_slot_conditions))
+                    query = query.filter(and_(*time_conditions))
 
-            if professor_filter:
-                professors = professor_filter.professors
-                block_ids = db.query(Block.id).join(Teacher).filter(Teacher.name.in_(professors)).subquery()
-                query = query.filter(NRC.blocks.any(Block.id.notin_(block_ids)))
+                if professor_filter:
+                    professors = professor_filter.professors
+                    block_ids = db.query(Block.id).join(Teacher).filter(Teacher.name.in_(professors)).subquery()
+                    query = query.filter(NRC.blocks.any(Block.id.notin_(block_ids)))
 
-            nrcs = query.all()
-            return nrcs
-
+                nrcs = query.all()
+                return nrcs
 
 
     def remove_major_classcodes(self, major_code: str):
@@ -239,3 +236,4 @@ class CRUD():
 
 
 crud = CRUD(db)
+crud.filter_db()
