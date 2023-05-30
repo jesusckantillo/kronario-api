@@ -34,9 +34,8 @@ class scheduleController():
     @staticmethod
     def get_unique_combinations(combinations: List[List["NRC"]]) -> List[List["NRC"]]:
         unique_combinations = []
-
         for combination in combinations:
-            classcodes = set(nrc.name for nrc in combination)
+            classcodes = set([nrc.name for nrc in combination])
             if len(classcodes) == len(combination):
                 
                 unique_combinations.append(combination)
@@ -47,12 +46,14 @@ class scheduleController():
     @staticmethod
     def create_schedule(classcodes: List["str"],time:List[TimeFilter]=None,professor:ProfessorFilter=None ) -> List[List["NRC"]]:
         final_len = len(classcodes)
+        lista = [classcodes, time, professor]
+        print(len(lista))
         nrc_list = crud.get_allnrc_bycc(classcodes, time, professor)
-        print(len(nrc_list))
         combinations = itertools.combinations(nrc_list, final_len)
         combinations = list(combinations)
         combinations = [list(tuple) for tuple in combinations]
         combinations = scheduleController.get_unique_combinations(combinations)
+        
         valid_combinations = [combination for combination in combinations
                               if scheduleController.check_combination(combination)]
         return valid_combinations

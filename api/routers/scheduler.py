@@ -5,7 +5,6 @@ from src.Schedule.schedule import scheduleController
 import schemas.schemas 
 
 schedule_router = APIRouter()
-
 @schedule_router.post("/schedule")
 async def create_schedule(info:dict):
     subjects = info["subjects"]
