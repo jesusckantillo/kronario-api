@@ -6,33 +6,6 @@ import schemas.schemas
 
 schedule_router = APIRouter()
 
-""""
-"subjects": [
-        {
-            "name": "CIRCUITOS I ",
-            "id": "IEL1011",
-            "category": [
-                "Ingeniería Eléctrica"
-            ]
-        },
-        {
-            "name": "ELECTRONICA II ",
-            "id": "IEN4030",
-            "category": [
-                "Ingeniería Eléctrica"
-            ]
-        },
-        {
-            "name": "CALCULO II ",
-            "id": "MAT1111",
-            "category": [
-                "Ingeniería de Sistemas y Computación",
-                "Ingeniería Eléctrica"
-            ]
-        }
-        """""
-
-
 @schedule_router.post("/schedule")
 async def create_schedule(info:dict):
     subjects = info["subjects"]

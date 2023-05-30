@@ -223,7 +223,6 @@ class CRUD():
                 nrcs = query.all()
                 return nrcs
 
-
     def remove_major_classcodes(self, major_code: str):
         major = self.db.query(Majors).filter(Majors.major_code == major_code).first()
 
@@ -236,4 +235,3 @@ class CRUD():
 
 
 crud = CRUD(db)
-crud.filter_db()
