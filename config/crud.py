@@ -192,7 +192,6 @@ class CRUD():
 
 
 
-
     def get_allnrc_bycc(self, classcodes_list: List[str], time_filters: Optional[List[TimeFilter]] = None,
                             professor_filter: Optional[ProfessorFilter] = None) -> List[NRC]:
             query = db.query(NRC).join(Classcodes).filter(Classcodes.cc_code.in_(classcodes_list))
@@ -211,13 +210,12 @@ class CRUD():
                         # Perform the time comparison
                         time_slot_conditions = [
                             and_(Block.day == columna,
-                                or_(Block.time_start >= hora_obj, Block.time_end <= hora_obj),
-                                or_(Block.time_start <= hora_obj, Block.time_end >= hora_obj))
+                                hora_obj.between(Block.time_start, Block.time_end))
                         ]
                         time_conditions.append(and_(*time_slot_conditions))
 
                 if time_conditions:
-                    query = query.filter(or_(*time_conditions))
+                    query = query.filter(and_(*time_conditions))
 
             if professor_filter:
                 professors = professor_filter.professors
